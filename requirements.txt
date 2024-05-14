@@ -1,0 +1,9 @@
+black==24.4.2
+flask==3.0.3
+flask-socketio==5.3.6
+flask-sqlalchemy==3.1.1
+simple-websocket==1.0.0
+flask-session==0.8.0
+eventlet==0.36.1
+names==0.3.0
+psycopg2==2.9.9
