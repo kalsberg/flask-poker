@@ -1,5 +1,6 @@
 function createPlayer(id) {
-    let playerRow = document.getElementById(id);
+    let rowId = "playerRow_" + id;
+    let playerRow = document.getElementById(rowId);
     
     // Check if player already exists
     if (playerRow) {
@@ -7,13 +8,29 @@ function createPlayer(id) {
     }
 
     playerRow = document.createElement("tr");
-    playerRow.id = id
+    playerRow.id = rowId
     let nameData = document.createElement("td")
     let voteData = document.createElement("td")
     playerRow.appendChild(nameData);
     playerRow.appendChild(voteData);
     document.getElementsByTagName("tbody")[0].appendChild(playerRow);
     return playerRow;
+}
+
+function copyToClipboard() {
+    var pageUrl = window.location.href;
+
+    navigator.clipboard.writeText(pageUrl)
+        .then(function() {
+        document.getElementById('copy-invite').innerText = 'COPIED!';
+        
+        setTimeout(function() {
+            document.getElementById('copy-invite').innerText = 'Copy invite link';
+        }, 2000);
+    })
+    .catch(function(error) {
+        console.error("Failed to copy: ", error);
+    });
 }
 
 window.onload = () => {
@@ -23,17 +40,16 @@ window.onload = () => {
     socket.on("vote", votes => {
         votes.forEach(vote => {
             let row = createPlayer(vote['user']);
-            console.log(row.getElementsByTagName("td"))
-            // row.getElementsByTagName("td")[1].innerText = vote['value']
+            row.getElementsByTagName("td")[0].innerText = vote['name'];
+            row.getElementsByTagName("td")[1].innerText = vote['value'];
+            console.log(row)
         })
-        console.log(votes)
     });
 
     const voteButtons = document.getElementById("vote").getElementsByTagName("button")
     for (let button of voteButtons) {
         button.onclick = click => {
             socket.emit('vote', {data: click.target.innerHTML});
-            console.log(click.target.innerHTML)
             click.target
             for ( let button of voteButtons ) {
                 button.classList.remove("me");
@@ -43,6 +59,16 @@ window.onload = () => {
     }
 
     document.getElementById("showVote").onclick = () => {
-        socket.emit('show', {});
+        socket.emit('show');
+        var voteValues = document.querySelectorAll('.vote-value');
+        var voteStatuses = document.querySelectorAll('.vote-status');
+
+        voteValues.forEach(function(voteValue) {
+            voteValue.style.display = 'inline'; // Display vote value
+        });
+
+        voteStatuses.forEach(function(voteStatus) {
+            voteStatus.style.display = 'none'; // Hide vote status
+        });
     }
 }

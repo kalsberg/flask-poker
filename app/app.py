@@ -1,7 +1,6 @@
-import names
-
 from flask import Flask, render_template, session, redirect
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import inspect
 from flask_socketio import SocketIO, emit, join_room
 
 app = Flask(__name__)
@@ -48,18 +47,16 @@ def favicon():
 
 
 @app.route("/<room_id>")
-def list_members(room_id="default"):  # put application's code here
+def load_room(room_id="default"):  # put application's code here
     user = load_user()
     session["user_room"] = room_id
     user.room = room_id
     db.session.commit()
     return render_template(
         "game.html",
-        room=room_id,
-        title="Flask Poker",
+        title="Poker planning (BB8)",
         votes=["☕️", 1, 2, 3, 5, 8, 13, 21, "Don't know"],
         user=user,
-        description="Smarter page templates with Flask & Jinja.",
         players=get_users_in_room(room_id),
     )
 
@@ -84,40 +81,34 @@ def handle_vote(data):
 
     emit(
         "vote",
-        [{"user": user.id, "value": "Voted" if user.vote is not None else "Yet to vote"}],
+        [{"user": user.id, "name": user.name, "value": "Voted" if user.vote is not None else None}],
         room=user.room,
     )
     db.session.commit()
     print(session)
 
 
-@socketio.on("name")
-def handle_name(data):
-    if "data" not in data or len(data["data"]) == 0:
-        print("bad name")
-        return
-
-    session["user_name"] = data["data"]
-    user = load_user()
-    user.name = data["data"]
-    db.session.commit()
-    emit("name", {"name": user.name, "id": user.id}, room=user.room)
-    print(session)
-
-
 @socketio.on("show")
-def show(ignored):
+def show():
     room_id = load_user().room
     votes = []
     for user in get_users_in_room(room_id):
-        votes.append({"user": user.id, "value": user.vote})
+        votes.append({"user": user.id,"name": user.name, "value": user.vote})
     print("Votes: ", votes)
     emit("vote", votes, room=room_id)
 
 
 # Helper functions
+def create_initial_users():
+    scrum_users = ["Kalyani Kalyani", "Shawn van den Berg", "Avinash Haldkar", "Hans Otto", "Himanshi Maheshwari", "Janet"]
+    for user in scrum_users:
+        user = User(name=user, room="default", vote=None)
+        db.session.add(user)
+    db.session.commit()
+
+
 def get_users_in_room(room_id):
-    return User.query.filter(User.name.isnot(None)).filter(
+    return User.query.filter(
         User.room == room_id
     )
 
@@ -128,12 +119,13 @@ def load_user():
     if "user_id" in session and session["user_id"] is not None:
         user = User.query.get(session["user_id"])
 
+    # Pick up the users with "default" room
     if user is None:
         user = User(
             (
                 session["user_name"]
                 if "user_name" in session
-                else names.get_full_name()
+                else User.query.filter(User.room == "default").first().name
             ),
             session["user_room"] if "user_room" in session else None,
             session["user_vote"] if "user_vote" in session else None,
@@ -143,7 +135,6 @@ def load_user():
         socketio.emit(
             "name", {"name": user.name, "id": user.id}, room=user.room
         )
-        print(user.id)
 
     session["user_id"] = user.id
     session["user_name"] = user.name
@@ -158,6 +149,8 @@ def sanitize_vote(user_vote):
 
 # Entrypoint
 with app.app_context():
-    User.__table__.drop(db.engine)
+    db.drop_all()
+    db.session.remove()
     db.create_all()
+    create_initial_users()
     db.session.commit()
