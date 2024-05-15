@@ -100,7 +100,7 @@ def show():
 
 # Helper functions
 def create_initial_users():
-    scrum_users = ["Kalyani Kalyani", "Shawn van den Berg", "Avinash Haldkar", "Hans Otto", "Himanshi Maheshwari", "Janet"]
+    scrum_users = ["Kalyani Kalyani", "Shawn van den Berg", "Avinash Haldkar", "Hans Otto", "Himanshi Maheshwari", "Janet Potagoli"]
     for user in scrum_users:
         user = User(name=user, room="default", vote=None)
         db.session.add(user)
