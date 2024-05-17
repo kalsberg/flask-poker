@@ -38,7 +38,7 @@
             </div>
             <div class="absolute justify-start flex items-center">
                 <img src="{{ url_for('static', filename='images/kalyani.jpg') }}"
-                     class="w-32 rounded-full shadow-lg border-4 border-white/10 -mt-16 mb-4"
+                     class="w-32 rounded-full shadow-lg border-2 border-white/10 -mt-16 ml--10 mb-4"
                      alt="Avatar" />
                 <div class="ml-5">
                     <h5 class="text-xl font-medium leading-tight">{{ user.name }}</h5>
@@ -62,7 +62,7 @@
                             <button
                                 type="button"
                                 id="{{ loop.index }}"
-                                class="inline-block rounded bg-[#00857A] mt-2 mb-2 px-6 pb-2 pt-2.5 text-xs font-medium text-white transition duration-150 ease-in-out hover:bg-primary-accent-200 focus:bg-primary-accent-200 focus:outline-none focus:ring-0 active:bg-primary-accent-200 motion-reduce:transition-none dark:bg-primary-300 dark:hover:bg-primary-400 dark:focus:bg-primary-400 dark:active:bg-primary-400">
+                                class="inline-block rounded bg-[#D8F0EF] mt-2 mb-2 px-6 pb-2 pt-2.5 text-xs font-medium text-[#00857A] transition duration-150 ease-in-out hover:bg-primary-accent-200 focus:bg-primary-accent-200 focus:outline-none focus:ring-0 active:bg-primary-accent-200 motion-reduce:transition-none dark:bg-primary-300 dark:hover:bg-primary-400 dark:focus:bg-primary-400 dark:active:bg-primary-400">
                                 {{ i }}
                             </button>
                         {% endfor %}
@@ -95,16 +95,19 @@
                                 </td>
                             </tr>
                             {% endfor %}
+                            <tr class="border-b border-neutral-200 dark:border-white/10">
+                                <td class="whitespace-nowrap border-e border-neutral-200 px-6 py-4 font-medium dark:border-white/10" colspan="2">
+                                    <button
+                                        type="button"
+                                        id="showVote"
+                                        class="inline-block rounded bg-neutral-800 mt-2 px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-neutral-50 shadow-dark-3 transition duration-150 ease-in-out hover:bg-neutral-700 hover:shadow-dark-2 focus:bg-neutral-700 focus:shadow-dark-2 focus:outline-none focus:ring-0 active:bg-neutral-900 active:shadow-dark-2 motion-reduce:transition-none dark:shadow-black/30 dark:hover:shadow-dark-strong dark:focus:shadow-dark-strong dark:active:shadow-dark-strong">
+                                        Reveal
+                                    </button>
+                                    <span id="averageVotes" style="display: none;"></span>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
-                    <div class="h-full flex justify-end items-center" data-twe-input-wrapper-init>
-                        <button
-                            type="button"
-                            id="showVote"
-                            class="inline-block rounded bg-neutral-800 mt-2 px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-neutral-50 shadow-dark-3 transition duration-150 ease-in-out hover:bg-neutral-700 hover:shadow-dark-2 focus:bg-neutral-700 focus:shadow-dark-2 focus:outline-none focus:ring-0 active:bg-neutral-900 active:shadow-dark-2 motion-reduce:transition-none dark:shadow-black/30 dark:hover:shadow-dark-strong dark:focus:shadow-dark-strong dark:active:shadow-dark-strong">
-                            Show vote
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>

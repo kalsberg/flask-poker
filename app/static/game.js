@@ -42,7 +42,6 @@ window.onload = () => {
             let row = createPlayer(vote['user']);
             row.getElementsByTagName("td")[0].innerText = vote['name'];
             row.getElementsByTagName("td")[1].innerText = vote['value'];
-            console.log(row)
         })
     });
 
@@ -52,8 +51,15 @@ window.onload = () => {
             socket.emit('vote', {data: click.target.innerHTML});
             click.target
             for ( let button of voteButtons ) {
-                button.classList.remove("me");
-                click.target.classList.add("me");
+                button.classList.remove("bg-[#00857A]");
+                button.classList.add("bg-[#D8F0EF]");
+                button.classList.remove("text-[#D8F0EF]");
+                button.classList.add("text-[#00857A]");
+
+                click.target.classList.remove("bg-[#D8F0EF]");
+                click.target.classList.add("bg-[#00857A]");
+                click.target.classList.remove("text-[#00857A]");
+                click.target.classList.add("text-[#D8F0EF]");
             }
         }
     }
@@ -63,12 +69,26 @@ window.onload = () => {
         var voteValues = document.querySelectorAll('.vote-value');
         var voteStatuses = document.querySelectorAll('.vote-status');
 
+        // Calculate the total sum of vote values
+        var totalSum = 0;
         voteValues.forEach(function(voteValue) {
-            voteValue.style.display = 'inline'; // Display vote value
+            totalSum += parseInt(voteValue.textContent); // Assuming vote values are stored as text content
+        });
+
+        // Calculate the average
+        var average = totalSum / voteValues.length;
+
+        // Display the average
+        var averageDisplay = document.getElementById('averageVotes');
+        averageDisplay.textContent = "Average Vote: " + average.toFixed(2);
+        averageDisplay.style.display = 'inline';
+
+        voteValues.forEach(function(voteValue) {
+            voteValue.style.display = 'inline';
         });
 
         voteStatuses.forEach(function(voteStatus) {
-            voteStatus.style.display = 'none'; // Hide vote status
+            voteStatus.style.display = 'none';
         });
     }
 }
