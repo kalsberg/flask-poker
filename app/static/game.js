@@ -96,14 +96,19 @@ window.onload = () => {
         var voteValues = document.querySelectorAll('.vote-value');
         var voteStatuses = document.querySelectorAll('.vote-status');
     
-        // Calculate the total sum of vote values
+        // Calculate the total sum of vote values and count the number of votes
         var totalSum = 0;
+        var count = 0;
         voteValues.forEach(function(voteValue) {
-            totalSum += parseInt(voteValue.textContent); // Assuming vote values are stored as text content
+            var vote = parseInt(voteValue.textContent);
+            if (!isNaN(vote)) {
+                totalSum += vote;
+                count++;
+            }
         });
     
         // Calculate the average
-        var average = totalSum / voteValues.length;
+        var average = (count > 0) ? (totalSum / count) : 0;
     
         // Create a new row for displaying the average
         var averageRow = document.getElementById('averageVotesRow');
@@ -117,23 +122,23 @@ window.onload = () => {
         var revealVotesRow = document.getElementById('revealVotesRow');
         revealVotesRow.style.display = 'none';
     
-        // Hide individual vote values and show vote statuses
+        // Hide individual vote statuses and show vote values
         voteValues.forEach(function(voteValue) {
-            voteValue.style.display = 'none';
+            voteValue.style.display = 'inline';
         });
     
         voteStatuses.forEach(function(voteStatus) {
-            voteStatus.style.display = 'inline';
+            voteStatus.style.display = 'none';
         });
     
         // Display the row containing the "Create new session" button
         var newSessionRow = document.getElementById('newSession');
         newSessionRow.style.display = 'inline';
-
+    
         document.getElementById("newSession").onclick = () => {
             var currentURL = window.location.href;
             var updatedURL = currentURL.split('/')[0] + '//' + currentURL.split('/')[2];
             window.location.href = updatedURL;
         }
-    }    
+    }
 }
