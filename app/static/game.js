@@ -2,7 +2,6 @@ function createPlayer(id) {
     let rowId = "playerRow_" + id;
     let playerRow = document.getElementById(rowId);
     
-    // Check if player already exists
     if (playerRow) {
         return playerRow;
     }
@@ -68,27 +67,45 @@ window.onload = () => {
         socket.emit('show');
         var voteValues = document.querySelectorAll('.vote-value');
         var voteStatuses = document.querySelectorAll('.vote-status');
-
+    
         // Calculate the total sum of vote values
         var totalSum = 0;
         voteValues.forEach(function(voteValue) {
             totalSum += parseInt(voteValue.textContent); // Assuming vote values are stored as text content
         });
-
+    
         // Calculate the average
         var average = totalSum / voteValues.length;
-
-        // Display the average
-        var averageDisplay = document.getElementById('averageVotes');
-        averageDisplay.textContent = "Average Vote: " + average.toFixed(2);
-        averageDisplay.style.display = 'inline';
-
+    
+        // Create a new row for displaying the average
+        var averageRow = document.getElementById('averageVotesRow');
+        averageRow.innerHTML = `
+            <td class="whitespace-nowrap border-e border-neutral-200 bg-[#D8F0EF] px-6 py-4 font-medium text-[#00857A] dark:border-white/10" colspan="2">
+                CONSENSUS: ${average.toFixed(2)}
+            </td>
+        `;
+    
+        // Hide the reveal button row
+        var revealVotesRow = document.getElementById('revealVotesRow');
+        revealVotesRow.style.display = 'none';
+    
+        // Hide individual vote values and show vote statuses
         voteValues.forEach(function(voteValue) {
-            voteValue.style.display = 'inline';
+            voteValue.style.display = 'none';
         });
-
+    
         voteStatuses.forEach(function(voteStatus) {
-            voteStatus.style.display = 'none';
+            voteStatus.style.display = 'inline';
         });
-    }
+    
+        // Display the row containing the "Create new session" button
+        var newSessionRow = document.getElementById('newSession');
+        newSessionRow.style.display = 'inline';
+
+        document.getElementById("newSession").onclick = () => {
+            var currentURL = window.location.href;
+            var updatedURL = currentURL.split('/')[0] + '//' + currentURL.split('/')[2];
+            window.location.href = updatedURL;
+        }
+    }    
 }
