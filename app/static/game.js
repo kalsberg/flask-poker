@@ -1,4 +1,4 @@
-function createPlayer(id) {
+function createPlayer(id, name, vote) {
     let rowId = "playerRow_" + id;
     let playerRow = document.getElementById(rowId);
     
@@ -7,14 +7,42 @@ function createPlayer(id) {
     }
 
     playerRow = document.createElement("tr");
-    playerRow.id = rowId
-    let nameData = document.createElement("td")
-    let voteData = document.createElement("td")
+    playerRow.id = rowId;
+    playerRow.className = "border-b border-neutral-200 dark:border-white/10";
+
+    let nameData = document.createElement("td");
+    nameData.className = "whitespace-nowrap border-e border-neutral-200 px-6 py-4 font-medium dark:border-white/10";
+    nameData.textContent = name;
+    
+    let voteData = document.createElement("td");
+    voteData.className = "whitespace-nowrap border-e border-neutral-200 px-6 py-4 dark:border-white/10";
+    
+    if (vote) {
+        let voteValue = document.createElement("span");
+        voteValue.className = "vote-value";
+        voteValue.style.display = "none";
+        voteValue.textContent = vote;
+
+        let voteStatus = document.createElement("span");
+        voteStatus.className = "vote-status";
+        voteStatus.textContent = "Voted";
+
+        voteData.appendChild(voteValue);
+        voteData.appendChild(voteStatus);
+    } else {
+        voteData.textContent = "Yet to vote";
+    }
+
     playerRow.appendChild(nameData);
     playerRow.appendChild(voteData);
-    document.getElementsByTagName("tbody")[0].appendChild(playerRow);
+    
+    let tbody = document.querySelector("tbody");
+    let revealVotesRow = document.getElementById("revealVotesRow");
+    tbody.insertBefore(playerRow, revealVotesRow);
+    
     return playerRow;
 }
+
 
 function copyToClipboard() {
     var pageUrl = window.location.href;
