@@ -63,73 +63,57 @@ function copyToClipboard() {
 window.onload = () => {
     const socket = io();
     socket.io.opts.transports = ["websocket"];
+    let averageVote = 0;
 
     socket.on("vote", votes => {
+        let totalVotes = 0;
+        let voteCount = votes.length;
+    
         votes.forEach(vote => {
             let row = createPlayer(vote['user']);
             row.getElementsByTagName("td")[0].innerText = vote['name'];
             row.getElementsByTagName("td")[1].innerText = vote['value'];
-        })
+    
+            totalVotes += parseFloat(vote['value']);
+        });
+    
+        let averageVote = totalVotes / voteCount;
+        let averageVoteText = `CONSENSUS: ${averageVote.toFixed(2)}`;
+        console.log(averageVoteText);
+    
+        // Update the average vote in the HTML
+        document.getElementById("averageVoteCell").innerText = averageVoteText;
     });
-
-    const voteButtons = document.getElementById("vote").getElementsByTagName("button")
+    
+    const voteButtons = document.getElementById("vote").getElementsByTagName("button");
     for (let button of voteButtons) {
         button.onclick = click => {
             socket.emit('vote', {data: click.target.innerHTML});
-            click.target
-            for ( let button of voteButtons ) {
+            click.target;
+            for (let button of voteButtons) {
                 button.classList.remove("bg-[#00857A]");
                 button.classList.add("bg-[#D8F0EF]");
                 button.classList.remove("text-[#D8F0EF]");
                 button.classList.add("text-[#00857A]");
-
+    
                 click.target.classList.remove("bg-[#D8F0EF]");
                 click.target.classList.add("bg-[#00857A]");
                 click.target.classList.remove("text-[#00857A]");
                 click.target.classList.add("text-[#D8F0EF]");
             }
         }
-    }
+    }    
 
     document.getElementById("showVote").onclick = () => {
         socket.emit('show');
-        var voteValues = document.querySelectorAll('.vote-value');
-        var voteStatuses = document.querySelectorAll('.vote-status');
-    
-        // Calculate the total sum of vote values and count the number of votes
-        var totalSum = 0;
-        var count = 0;
-        voteValues.forEach(function(voteValue) {
-            var vote = parseInt(voteValue.textContent);
-            if (!isNaN(vote)) {
-                totalSum += vote;
-                count++;
-            }
-        });
-    
-        // Calculate the average
-        var average = (count > 0) ? (totalSum / count) : 0;
     
         // Create a new row for displaying the average
         var averageRow = document.getElementById('averageVotesRow');
-        averageRow.innerHTML = `
-            <td class="whitespace-nowrap border-e border-neutral-200 bg-[#D8F0EF] px-6 py-4 font-medium text-[#00857A] dark:border-white/10" colspan="2">
-                CONSENSUS: ${average.toFixed(2)}
-            </td>
-        `;
+        averageRow.style.display = 'table-row';
     
         // Hide the reveal button row
         var revealVotesRow = document.getElementById('revealVotesRow');
         revealVotesRow.style.display = 'none';
-    
-        // Hide individual vote statuses and show vote values
-        voteValues.forEach(function(voteValue) {
-            voteValue.style.display = 'inline';
-        });
-    
-        voteStatuses.forEach(function(voteStatus) {
-            voteStatus.style.display = 'none';
-        });
     
         // Display the row containing the "Create new session" button
         var newSessionRow = document.getElementById('newSession');
