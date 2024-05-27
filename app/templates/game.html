@@ -14,117 +14,15 @@
                 crossorigin="anonymous"></script>
         <title>{{ title }}</title>
     </head>
+
     <body>
-        <header>
-            <div
-                class="relative h-[250px] overflow-hidden bg-[url('{{url_for('static',filename='images/poker_banner.jpg')}}')] bg-cover bg-[50%] bg-no-repeat">
-                <div
-                class="absolute bottom-0 left-0 right-0 top-0 h-full w-full overflow-hidden bg-black/60 bg-fixed">
-                <div class="flex h-full items-center justify-center">
-                    <div class="px-6 text-center text-white md:px-12">
-                    <h1 class="mb-6 text-5xl font-bold">{{ title }}</h1>
-                    <button
-                        id="copy-invite"
-                        onClick="copyToClipboard()"
-                        type="button"
-                        data-twe-ripple-init
-                        data-twe-ripple-color="light" 
-                        class="inline-block rounded border-2 border-neutral-50 px-6 pb-[6px] pt-2 text-xs font-medium uppercase leading-normal text-neutral-50 transition duration-150 ease-in-out hover:border-neutral-300 hover:text-neutral-200 focus:border-neutral-300 focus:text-neutral-200 focus:outline-none focus:ring-0 active:border-neutral-300 active:text-neutral-200 dark:hover:bg-neutral-600 dark:focus:bg-neutral-600">
-                        Copy invite link    
-                    </button>
-                    </div>
-                </div>
-                </div>
-            </div>
-            <div class="absolute justify-start flex items-center">
-                <img src="{{ url_for('static', filename='images/' + profile_picture) }}"
-                     class="w-32 rounded-full shadow-lg border-2 border-white/10 -mt-16 ml--10 mb-4"
-                     alt="Avatar" />
-                <div class="ml-5">
-                    <h5 class="text-xl font-medium leading-tight">{{ user.name }}</h5>
-                    <small class="mb-4 mt-0 font-normal leading-normal">Persona role</small>
-                </div>
-            </div>            
-        </header>
+        <header>{% include 'header.html' %}</header>
         <div class="grid grid-cols-12 gap-4" style="margin-top: 70pt;">
-            <div class="col-span-12 md:col-span-6">
-                <div
-                    class="block rounded-lg bg-white p-6 text-surface shadow-secondary-1">
-                    <h5 class="mb-2 text-xl font-medium leading-tight">Story description</h5>
-                    <small class="mb-4 mt-0 font-normal leading-normal">
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nobis, libero
-                        iste quod quibusdam maxime recusandae odit eveniet, aspernatur culpa
-                        provident error molestiae vitae corporis in vero est! Beatae, ipsum
-                        voluptatibus.
-                    </small>
-                    <div class="relative mb-3" id="vote" data-twe-input-wrapper-init>
-                        {% for i in votes %}
-                            <button
-                                type="button"
-                                id="{{ loop.index }}"
-                                class="inline-block rounded bg-[#D8F0EF] mt-2 mb-2 px-6 pb-2 pt-2.5 text-xs font-medium text-[#00857A] transition duration-150 ease-in-out hover:bg-primary-accent-200 focus:bg-primary-accent-200 focus:outline-none focus:ring-0 active:bg-primary-accent-200 motion-reduce:transition-none dark:bg-primary-300 dark:hover:bg-primary-400 dark:focus:bg-primary-400 dark:active:bg-primary-400">
-                                {{ i }}
-                            </button>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>  
-            <div class="col-span-12 md:col-span-6">
-                <div
-                    class="block rounded-lg bg-white p-6 text-surface shadow-secondary-1">
-                    <table
-                        class="min-w-full border border-neutral-200 text-center text-sm font-light text-surface dark:border-white/10">
-                        <thead
-                            class="border-b border-neutral-200 bg-[#00857A] font-medium text-white dark:border-white/10">
-                            <tr>
-                                <th scope="col" class=" px-6 py-4">Name</th>
-                                <th scope="col" class=" px-6 py-4">Vote</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for player in players %}
-                            <tr id="playerRow_{{ player.id }}" class="border-b border-neutral-200 dark:border-white/10">
-                                <td class="whitespace-nowrap border-e border-neutral-200 px-6 py-4 font-medium dark:border-white/10">{{ player.name }}</td>
-                                <td class="whitespace-nowrap border-e border-neutral-200 px-6 py-4 dark:border-white/10">
-                                    {% if player.vote %}
-                                    <span class="vote-value" style="display: none;">{{ player.vote }}</span>
-                                    <span class="vote-status">Voted</span>
-                                    {% else %}
-                                        Yet to vote
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            {% endfor %}
-                            <tr id="revealVotesRow" class="border-b border-neutral-200 dark:border-white/10">
-                                <td class="whitespace-nowrap border-e border-neutral-200 px-6 py-4 font-medium dark:border-white/10" colspan="2">
-                                    <button
-                                        type="button"
-                                        id="showVote"
-                                        class="inline-block rounded bg-neutral-800 mt-2 px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-neutral-50 shadow-dark-3 transition duration-150 ease-in-out hover:bg-neutral-700 hover:shadow-dark-2 focus:bg-neutral-700 focus:shadow-dark-2 focus:outline-none focus:ring-0 active:bg-neutral-900 active:shadow-dark-2 motion-reduce:transition-none dark:shadow-black/30 dark:hover:shadow-dark-strong dark:focus:shadow-dark-strong dark:active:shadow-dark-strong">
-                                        Reveal
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr id="averageVotesRow" class="border-b border-success-200 dark:border-white/10 bg-success-100 text-neutral-800" style="display: none;">
-                                <td id="averageVoteCell" class="whitespace-nowrap border-e border-neutral-200 bg-[#D8F0EF] px-6 py-4 font-medium text-[#00857A] dark:border-white/10" colspan="2">
-                                    {{ averageVote }}
-                                </td>
-                            </tr>
-                            <tr class="border-b border-neutral-200 dark:border-white/10">
-                                <td class="whitespace-nowrap border-e border-neutral-200 px-6 py-4 font-medium dark:border-white/10" colspan="2">
-                                    <button
-                                        type="button"
-                                        id="newSession"
-                                        class="inline-block rounded bg-[#FFD200] mt-2 px-6 pb-2 pt-2.5 text-xs font-medium text-[#111] uppercase leading-normal tshadow-dark-3 transition duration-150 ease-in-out hover:bg-neutral-700 hover:shadow-dark-2 focus:bg-neutral-700 focus:shadow-dark-2 focus:outline-none focus:ring-0 active:bg-neutral-900 active:shadow-dark-2 motion-reduce:transition-none dark:shadow-black/30 dark:hover:shadow-dark-strong dark:focus:shadow-dark-strong dark:active:shadow-dark-strong"  style="display: none;">
-                                        Create new session
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            {% include 'votes.html' %}  
+            {% include 'players.html' %}  
         </div>
     </body>
-    <script src="{{ url_for('static', filename='game.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/htmx.min.js') }}"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/ws.js"></script>
+    <script src="{{ url_for('static', filename='js/game.js') }}" defer></script>
 </html>
