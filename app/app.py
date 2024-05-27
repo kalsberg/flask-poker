@@ -1,4 +1,4 @@
-from flask import Flask, render_template, session, redirect
+from flask import Flask, render_template, session, redirect, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_socketio import SocketIO, emit, join_room
 import uuid
@@ -13,6 +13,7 @@ app.config["SESSION_TYPE"] = "sqlalchemy"
 app.config["PERMANENT_SESSION_LIFETIME"] = 60 * 60 * 24  # 24 hours
 db = SQLAlchemy(app)
 
+
 # Models
 class User(db.Model):
     id = db.Column("user_id", db.Integer, primary_key=True)
@@ -25,6 +26,7 @@ class User(db.Model):
         self.room = room
         self.vote = vote
 
+
 # Endpoints
 @app.route("/")
 def random_room():
@@ -35,9 +37,11 @@ def random_room():
     room = uid_str[9:]
     return redirect("/" + str(room), code=302)
 
+
 @app.route("/favicon.ico")
 def favicon():
     return "Not Found", 404
+
 
 @app.route("/<room_id>")
 def load_room(room_id="default"):
@@ -55,28 +59,24 @@ def load_room(room_id="default"):
         players=get_users_in_room(room_id),
     )
 
+
 @socketio.on("connect")
 def connect():
     user = load_user(session.get("user_room", "default"))
     join_room(user.room)
     socketio.emit("name", {"name": user.name, "id": user.id}, room=user.room)
 
-@socketio.on("vote")
-def handle_vote(data):
-    user = load_user(session["user_room"])
-    if str(session["user_vote"]) == str(data["data"]):
-        user.vote = None
-        session["user_vote"] = None
-    else:
-        user.vote = sanitize_vote(data["data"])
-        session["user_vote"] = user.vote
 
-    emit(
-        "vote",
-        [{"user": user.id, "name": user.name, "value": "Voted" if user.vote is not None else None}],
-        room=user.room,
-    )
+@app.route('/vote', methods=['GET'])
+def handle_vote():
+    vote_value = request.args.get('vote')
+    user = load_user(session["user_room"])
+    user.vote = sanitize_vote(vote_value)
+    session["user_vote"] = user.vote
     db.session.commit()
+
+    return render_template("players.html", players=get_users_in_room(user.room))
+
 
 @socketio.on("show")
 def show():
@@ -86,19 +86,24 @@ def show():
         votes.append({"user": user.id, "name": user.name, "value": user.vote})
     emit("vote", votes, room=room_id)
 
+
 # Helper functions
 def create_initial_users():
     scrum_users = [
         "Kalyani Kalyani", "Shawn van den Berg", "Avinash Haldkar",
-        "Hans Otto", "Himanshi Maheshwari", "Janet Potagoli"
+        "Hans Otto", "Vinay Khindri"
     ]
     for user_name in scrum_users:
         user = User(name=user_name, room="default")
         db.session.add(user)
     db.session.commit()
 
+
 def get_users_in_room(room_id):
+    for user in User.query.filter(User.room == room_id).all():
+        print(user.name, user.vote)
     return User.query.filter(User.room == room_id).all()
+
 
 def load_user(room_id):
     if "user_id" in session:
@@ -116,13 +121,17 @@ def load_user(room_id):
     session["user_name"] = user.name
     session["user_vote"] = user.vote
     session["user_room"] = user.room
+    print(user.__dict__)
     return user
+
 
 def sanitize_vote(user_vote):
     return user_vote.replace('\n', '').strip() if user_vote else None
 
+
 # Entrypoint
 with app.app_context():
+    db.drop_all()
     db.create_all()
     create_initial_users()
     db.session.commit()
