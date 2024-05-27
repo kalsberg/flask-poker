@@ -15,8 +15,9 @@
                 <tr id="playerRow_{{ player.id }}" class="border-b border-neutral-200 dark:border-white/10">
                     <td class="whitespace-nowrap border-e border-neutral-200 px-6 py-4 font-medium dark:border-white/10">{{ player.name }}</td>
                     <td class="whitespace-nowrap border-e border-neutral-200 px-6 py-4 dark:border-white/10">
-                        {% if player.vote %}
-                        <span class="vote-value" style="display: none;">{{ player.vote }}</span>
+                        {% if reveal %}
+                        <span class="vote-value">{{ player.vote }}</span>
+                        {% elif player.vote %}
                         <span class="vote-status">Voted</span>
                         {% else %}
                             Yet to vote
@@ -24,31 +25,39 @@
                     </td>
                 </tr>
                 {% endfor %}
+                {% if not reveal %}
                 <tr id="revealVotesRow" class="border-b border-neutral-200 dark:border-white/10">
                     <td class="whitespace-nowrap border-e border-neutral-200 px-6 py-4 font-medium dark:border-white/10" colspan="2">
                         <button
                             type="button"
                             id="showVote"
+                            hx-get="/reveal-votes"
+                            hx-trigger="click"
+                            hx-target="#playersDetails"
+                            hx-swap="outerHTML"
                             class="inline-block rounded bg-neutral-800 mt-2 px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-neutral-50 shadow-dark-3 transition duration-150 ease-in-out hover:bg-neutral-700 hover:shadow-dark-2 focus:bg-neutral-700 focus:shadow-dark-2 focus:outline-none focus:ring-0 active:bg-neutral-900 active:shadow-dark-2 motion-reduce:transition-none dark:shadow-black/30 dark:hover:shadow-dark-strong dark:focus:shadow-dark-strong dark:active:shadow-dark-strong">
                             Reveal
                         </button>
                     </td>
                 </tr>
-                <tr id="averageVotesRow" class="border-b border-success-200 dark:border-white/10 bg-success-100 text-neutral-800" style="display: none;">
-                    <td id="averageVoteCell" class="whitespace-nowrap border-e border-neutral-200 bg-[#D8F0EF] px-6 py-4 font-medium text-[#00857A] dark:border-white/10" colspan="2">
-                        {{ averageVote }}
+                {% endif %}
+                {% if reveal %}
+                <tr class="border-b border-success-200 dark:border-white/10 bg-success-100 text-neutral-800">
+                    <td class="whitespace-nowrap border-e border-neutral-200 bg-[#D8F0EF] px-6 py-4 font-medium text-[#00857A] dark:border-white/10" colspan="2">
+                        {{ average }}
                     </td>
                 </tr>
-                <tr class="border-b border-neutral-200 dark:border-white/10">
+                <tr hx-get="/" hx-trigger="click" hx-target="#pokerPlanning" hx-swap="outerHTML" hx-replace-url="true">
                     <td class="whitespace-nowrap border-e border-neutral-200 px-6 py-4 font-medium dark:border-white/10" colspan="2">
                         <button
                             type="button"
                             id="newSession"
-                            class="inline-block rounded bg-[#FFD200] mt-2 px-6 pb-2 pt-2.5 text-xs font-medium text-[#111] uppercase leading-normal tshadow-dark-3 transition duration-150 ease-in-out hover:bg-neutral-700 hover:shadow-dark-2 focus:bg-neutral-700 focus:shadow-dark-2 focus:outline-none focus:ring-0 active:bg-neutral-900 active:shadow-dark-2 motion-reduce:transition-none dark:shadow-black/30 dark:hover:shadow-dark-strong dark:focus:shadow-dark-strong dark:active:shadow-dark-strong"  style="display: none;">
+                            class="inline-block rounded bg-[#FFD200] mt-2 px-6 pb-2 pt-2.5 text-xs font-medium text-[#111] uppercase leading-normal tshadow-dark-3 transition duration-150 ease-in-out hover:bg-neutral-700 hover:shadow-dark-2 focus:bg-neutral-700 focus:shadow-dark-2 focus:outline-none focus:ring-0 active:bg-neutral-900 active:shadow-dark-2 motion-reduce:transition-none dark:shadow-black/30 dark:hover:shadow-dark-strong dark:focus:shadow-dark-strong dark:active:shadow-dark-strong">
                             Create new session
                         </button>
                     </td>
                 </tr>
+                {% endif %}
             </tbody>
         </table>
     </div>

@@ -57,6 +57,8 @@ def load_room(room_id="default"):
         user=user,
         profile_picture=user.name.split(" ")[0].lower() + '.jpg',
         players=get_users_in_room(room_id),
+        average=0,
+        reveal=False
     )
 
 
@@ -75,16 +77,15 @@ def handle_vote():
     session["user_vote"] = user.vote
     db.session.commit()
 
-    return render_template("players.html", players=get_users_in_room(user.room))
+    return render_template("players.html", players=get_users_in_room(user.room), average=0, reveal=False)
 
 
-@socketio.on("show")
-def show():
+@app.route('/reveal-votes', methods=['GET'])
+def reveal_votes():
     room_id = session.get("user_room", "default")
-    votes = []
-    for user in get_users_in_room(room_id):
-        votes.append({"user": user.id, "name": user.name, "value": user.vote})
-    emit("vote", votes, room=room_id)
+    players = get_users_in_room(room_id)
+    average = round(sum([player.vote for player in players if player.vote is not None]) / len(players), 2)
+    return render_template("players.html", players=players, average=average, reveal=True)
 
 
 # Helper functions
@@ -100,8 +101,6 @@ def create_initial_users():
 
 
 def get_users_in_room(room_id):
-    for user in User.query.filter(User.room == room_id).all():
-        print(user.name, user.vote)
     return User.query.filter(User.room == room_id).all()
 
 
@@ -121,7 +120,6 @@ def load_user(room_id):
     session["user_name"] = user.name
     session["user_vote"] = user.vote
     session["user_room"] = user.room
-    print(user.__dict__)
     return user
 
 
