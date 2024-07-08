@@ -1,10 +1,11 @@
+import uuid
+import logging
+
 from flask import Flask, render_template, session, redirect, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_socketio import SocketIO, join_room
 from flask_oidc import OpenIDConnect
 from flask_session import Session
-import uuid
-import logging
 
 from constants import (
     DB_SETTINGS,
@@ -31,7 +32,6 @@ Session(app)
 app.config.update(OIDC_SETTINGS)
 oidc = OpenIDConnect(app)
 
-
 # Models
 class User(db.Model):
     id = db.Column("user_id", db.Integer, primary_key=True)
@@ -51,20 +51,17 @@ class User(db.Model):
     ):
         self.first_name = first_name
         self.last_name = last_name
-        self.last_name = last_name
         self.email = email
         self.room = room
         self.vote = vote
 
-
+# Routes
 @app.route("/")
 @oidc.require_login
 def random_room():
-    # Append a unique identifier to the session ID
     session["session_id"] = str(uuid.uuid4()) + "-" + str(uuid.uuid4())
     room = uuid.uuid4().urn[9:]
     return redirect("/" + str(room), code=302)
-
 
 @oidc.accept_token
 @app.route("/<room_id>")
@@ -75,22 +72,17 @@ def load_room(room_id="default"):
         title="Poker planning (BB8)",
         votes=["☕️", 1, 2, 3, 5, 8, 13, 21, "Don't know"],
         user=user_instance,
-        profile_picture=user_instance.first_name.split(" ")[0].lower()
-        + ".jpg",
+        profile_picture=user_instance.first_name.split(" ")[0].lower() + ".jpg",
         players=get_users_in_room(room_id),
         average=0,
         reveal=False,
     )
 
-
 @socketio.on("connect")
 def connect():
     user = load_user(session.get("user_room", "default"))
     join_room(user.room)
-    socketio.emit(
-        "name", {"name": user.first_name, "id": user.id}, room=user.room
-    )
-
+    socketio.emit("name", {"name": user.first_name, "id": user.id}, room=user.room)
 
 @app.route("/vote", methods=["GET"])
 def handle_vote():
@@ -107,31 +99,25 @@ def handle_vote():
         reveal=False,
     )
 
-
 @app.route("/reveal-votes", methods=["GET"])
 def reveal_votes():
     room_id = session.get("user_room", "default")
     players = get_users_in_room(room_id)
     average = round(
-        sum([player.vote for player in players if player.vote is not None])
-        / len(players),
+        sum([player.vote for player in players if player.vote is not None]) / len(players),
         2,
     )
     return render_template(
         "players.html", players=players, average=average, reveal=True
     )
 
-
 # Helper functions
 def get_users_in_room(room_id):
     return User.query.filter(User.room == room_id).all()
 
-
 def load_user(room_id):
-    # Get SSO information of the logged in user
     sso_info = session["oidc_auth_profile"]
 
-    # Get or create user unstance
     user_instance, _ = get_or_create(
         session=db.session,
         model=User,
@@ -144,12 +130,10 @@ def load_user(room_id):
         email=sso_info["email"],
     )
 
-    # Update existing user instance details
     user_instance.room = room_id
     user_instance.vote = None
     db.session.commit()
 
-    # Update current session information
     session.update(
         {
             "user_id": user_instance.id,
@@ -160,10 +144,8 @@ def load_user(room_id):
     )
     return user_instance
 
-
 def sanitize_vote(user_vote):
     return user_vote.replace("\n", "").strip() if user_vote else None
-
 
 # Entrypoint
 with app.app_context():
