@@ -1,18 +1,15 @@
 <div id="playersDetails" class="col-span-12 md:col-span-6">
-    <div
-        class="block rounded-lg bg-white p-6 text-surface shadow-secondary-1">
-        <table
-            class="min-w-full border border-neutral-200 text-center text-sm font-light text-surface dark:border-white/10">
-            <thead
-                class="border-b border-neutral-200 bg-[#00857A] font-medium text-white dark:border-white/10">
+    <div class="block rounded-lg bg-white p-6 text-surface shadow-secondary-1">
+        <table class="player-table">
+            <thead class="table-header">
                 <tr>
-                    <th scope="col" class=" px-6 py-4">Name</th>
-                    <th scope="col" class=" px-6 py-4">Vote</th>
+                    <th scope="col" class="px-6 py-4">Name</th>
+                    <th scope="col" class="px-6 py-4">Vote</th>
                 </tr>
             </thead>
             <tbody>
                 {% for player in players %}
-                <tr id="playerRow_{{ player.id }}" class="border-b border-neutral-200 dark:border-white/10">
+                <tr id="playerRow_{{ player.id }}" class="table-row">
                     <td class="whitespace-nowrap border-e border-neutral-200 px-6 py-4 font-medium dark:border-white/10">{{ player.first_name }} {{ player.last_name }}</td>
                     <td class="whitespace-nowrap border-e border-neutral-200 px-6 py-4 dark:border-white/10">
                         {% if reveal %}
@@ -26,16 +23,9 @@
                 </tr>
                 {% endfor %}
                 {% if not reveal %}
-                <tr id="revealVotesRow" class="border-b border-neutral-200 dark:border-white/10">
+                <tr id="revealVotesRow" class="table-row">
                     <td class="whitespace-nowrap border-e border-neutral-200 px-6 py-4 font-medium dark:border-white/10" colspan="2">
-                        <button
-                            type="button"
-                            id="showVote"
-                            hx-get="/reveal-votes"
-                            hx-trigger="click"
-                            hx-target="#playersDetails"
-                            hx-swap="outerHTML"
-                            class="inline-block rounded bg-neutral-800 mt-2 px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-neutral-50 shadow-dark-3 transition duration-150 ease-in-out hover:bg-neutral-700 hover:shadow-dark-2 focus:bg-neutral-700 focus:shadow-dark-2 focus:outline-none focus:ring-0 active:bg-neutral-900 active:shadow-dark-2 motion-reduce:transition-none dark:shadow-black/30 dark:hover:shadow-dark-strong dark:focus:shadow-dark-strong dark:active:shadow-dark-strong">
+                        <button type="button" id="showVote" hx-get="/reveal-votes" hx-trigger="click" hx-target="#playersDetails" hx-swap="outerHTML" class="reveal-button">
                             Reveal
                         </button>
                     </td>
@@ -49,10 +39,7 @@
                 </tr>
                 <tr hx-get="/" hx-trigger="click" hx-target="#pokerPlanning" hx-swap="outerHTML" hx-replace-url="true">
                     <td class="whitespace-nowrap border-e border-neutral-200 px-6 py-4 font-medium dark:border-white/10" colspan="2">
-                        <button
-                            type="button"
-                            id="newSession"
-                            class="inline-block rounded bg-[#FFD200] mt-2 px-6 pb-2 pt-2.5 text-xs font-medium text-[#111] uppercase leading-normal tshadow-dark-3 transition duration-150 ease-in-out hover:bg-neutral-700 hover:shadow-dark-2 focus:bg-neutral-700 focus:shadow-dark-2 focus:outline-none focus:ring-0 active:bg-neutral-900 active:shadow-dark-2 motion-reduce:transition-none dark:shadow-black/30 dark:hover:shadow-dark-strong dark:focus:shadow-dark-strong dark:active:shadow-dark-strong">
+                        <button type="button" id="newSession" class="new-session-button">
                             Create new session
                         </button>
                     </td>

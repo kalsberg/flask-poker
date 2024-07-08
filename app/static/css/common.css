@@ -1,0 +1,54 @@
+/* Combine multiple classes into single custom classes */
+
+/* Header background and overlay */
+.header-bg {
+    @apply relative h-[250px] overflow-hidden bg-[url('{{url_for('static',filename='images/poker_banner.jpg')}}')] bg-cover bg-[50%] bg-no-repeat;
+}
+
+.overlay-bg {
+    @apply absolute bottom-0 left-0 right-0 top-0 h-full w-full overflow-hidden bg-black/60 bg-fixed;
+}
+
+/* Center content */
+.center-content {
+    @apply flex h-full items-center justify-center;
+}
+
+.text-center-md {
+    @apply px-6 text-center text-white md:px-12;
+}
+
+/* Copy button */
+.copy-button {
+    @apply inline-block rounded border-2 border-neutral-50 px-6 pb-[6px] pt-2 text-xs font-medium uppercase leading-normal text-neutral-50 transition duration-150 ease-in-out hover:border-neutral-300 hover:text-neutral-200 focus:border-neutral-300 focus:text-neutral-200 focus:outline-none focus:ring-0 active:border-neutral-300 active:text-neutral-200 dark:hover:bg-neutral-600 dark:focus:bg-neutral-600;
+}
+
+/* Profile picture */
+.profile-picture {
+    @apply w-32 rounded-full shadow-lg border-2 border-white/10 -mt-16 ml--10 mb-4;
+}
+
+/* Player table */
+.player-table {
+    @apply min-w-full border border-neutral-200 text-center text-sm font-light text-surface dark:border-white/10;
+}
+
+/* Table header */
+.table-header {
+    @apply border-b border-neutral-200 bg-[#00857A] font-medium text-white dark:border-white/10;
+}
+
+/* Table row */
+.table-row {
+    @apply border-b border-neutral-200 dark:border-white/10;
+}
+
+/* Reveal button */
+.reveal-button {
+    @apply inline-block rounded bg-neutral-800 mt-2 px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-neutral-50 shadow-dark-3 transition duration-150 ease-in-out hover:bg-neutral-700 hover:shadow-dark-2 focus:bg-neutral-700 focus:shadow-dark-2 focus:outline-none focus:ring-0 active:bg-neutral-900 active:shadow-dark-2 motion-reduce:transition-none dark:shadow-black/30 dark:hover:shadow-dark-strong dark:focus:shadow-dark-strong dark:active:shadow-dark-strong;
+}
+
+/* New session button */
+.new-session-button {
+    @apply inline-block rounded bg-[#FFD200] mt-2 px-6 pb-2 pt-2.5 text-xs font-medium text-[#111] uppercase leading-normal tshadow-dark-3 transition duration-150 ease-in-out hover:bg-neutral-700 hover:shadow-dark-2 focus:bg-neutral-700 focus:shadow-dark-2 focus:outline-none focus:ring-0 active:bg-neutral-900 active:shadow-dark-2 motion-reduce:transition-none dark:shadow-black/30 dark:hover:shadow-dark-strong dark:focus:shadow-dark-strong dark:active:shadow-dark-strong;
+}
