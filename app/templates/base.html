@@ -1,0 +1,12 @@
+<div class="justify-end flex bg-[#00857A]">
+    <span class="relative inline-block">
+        <img src="{{ url_for('static', filename='images/' + profile_picture) }}"
+            class="w-12 rounded-full shadow-lg border-2 border-white/10 ml--10 mb-4"
+            alt="Avatar" />
+        <span class="bottom-4 left-9 animate-pulse absolute w-3.5 h-3.5 bg-[#27AE60] border-2 border-white dark:border-gray-800 rounded-full"></span>
+    </span>
+</div>
+<div class="ml-5">
+    <h5 class="text-xl font-medium leading-tight">{{ user.first_name }} {{ user.last_name }}</h5>
+    <small class="mb-4 mt-0 font-normal leading-normal">{{ user.email }}</small>
+</div> 
