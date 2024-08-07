@@ -32,19 +32,16 @@
   <button
       id="createNew"
       class="action-button"
-      data-twe-toggle="modal"
-      data-twe-target="#addUserModal"
-      data-twe-ripple-init
-      data-twe-ripple-color="light">
+      onclick="document.getElementById('addUserModal').showModal();">
       Create new
   </button>
 
   <!-- Modal -->
-  <div class="fixed inset-0 flex items-center justify-center modal" id="addUserModal">
-      <div class="bg-white rounded-lg shadow-lg w-1/3">
+  <dialog id="addUserModal" class="modal p-0 rounded-lg w-1/3">
+      <div class="bg-white rounded-lg shadow-lg">
           <div class="border-b px-4 py-2 flex justify-between items-center">
               <h5 class="text-lg">Add New User</h5>
-              <button class="text-black close" data-twe-dismiss="modal">&times;</button>
+              <button class="text-black" onclick="document.getElementById('addUserModal').close();">&times;</button>
           </div>
           <div class="p-4">
               <form>
@@ -63,11 +60,11 @@
               </form>
           </div>
           <div class="border-t px-4 py-2 flex justify-end">
-              <button class="bg-gray-500 text-white px-4 py-2 rounded mr-2 close" data-twe-dismiss="modal">Close</button>
+              <button class="bg-gray-500 text-white px-4 py-2 rounded mr-2" onclick="document.getElementById('addUserModal').close();">Close</button>
               <button class="bg-blue-500 text-white px-4 py-2 rounded">Save changes</button>
           </div>
       </div>
-  </div>
+  </dialog>
     
   <!-- Table -->
   <table>
