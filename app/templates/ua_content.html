@@ -37,31 +37,34 @@
   </button>
 
   <!-- Modal -->
-  <dialog id="addUserModal" class="modal p-0 rounded-lg w-1/3">
+  <dialog id="addUserModal" class="modal p-0 w-1/2">
       <div class="bg-white rounded-lg shadow-lg">
-          <div class="border-b px-4 py-2 flex justify-between items-center">
-              <h5 class="text-lg">Add New User</h5>
-              <button class="text-black" onclick="document.getElementById('addUserModal').close();">&times;</button>
+          <div class="dialogue-header">
+              <h5 class="text-lg">Create new user</h5>
           </div>
           <div class="p-4">
               <form>
                   <div class="mb-4">
-                      <label for="username" class="block text-gray-700">Username</label>
-                      <input type="text" class="w-full px-3 py-2 border rounded" id="username" placeholder="Enter username">
+                      <label for="first_name" class="dialogue-label">First name</label>
+                      <input type="text" class="dialogue-input" id="first_name" required>
                   </div>
                   <div class="mb-4">
-                      <label for="email" class="block text-gray-700">Email address</label>
-                      <input type="email" class="w-full px-3 py-2 border rounded" id="email" placeholder="Enter email">
+                      <label for="last_name" class="dialogue-label">Last name</label>
+                      <input type="text" class="dialogue-input" id="last_name" required>
                   </div>
                   <div class="mb-4">
-                      <label for="password" class="block text-gray-700">Password</label>
-                      <input type="password" class="w-full px-3 py-2 border rounded" id="password" placeholder="Password">
+                      <label for="email" class="dialogue-label">Email address</label>
+                      <input type="email" class="dialogue-input" id="email" required>
                   </div>
+                  <div class="mb-4">
+                    <label for="role" class="dialogue-label">Role</label>
+                    <input type="role" class="dialogue-input" id="role" required>
+                </div>
               </form>
           </div>
           <div class="border-t px-4 py-2 flex justify-end">
-              <button class="bg-gray-500 text-white px-4 py-2 rounded mr-2" onclick="document.getElementById('addUserModal').close();">Close</button>
-              <button class="bg-blue-500 text-white px-4 py-2 rounded">Save changes</button>
+              <button class="dialogue-button">Save</button>
+              <button class="dialogue-button dialogue-close" onclick="document.getElementById('addUserModal').close();">Close</button>
           </div>
       </div>
   </dialog>
