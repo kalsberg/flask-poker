@@ -46,25 +46,41 @@
               <form>
                   <div class="mb-4">
                       <label for="first_name" class="dialogue-label">First name</label>
-                      <input type="text" class="dialogue-input" id="first_name" required>
+                      <input type="text" class="dialogue-input" id="first_name" name="first_name" value="Vinay" required>
                   </div>
                   <div class="mb-4">
                       <label for="last_name" class="dialogue-label">Last name</label>
-                      <input type="text" class="dialogue-input" id="last_name" required>
+                      <input type="text" class="dialogue-input" id="last_name" name="last_name" value="Khindri" required>
                   </div>
                   <div class="mb-4">
-                      <label for="email" class="dialogue-label">Email address</label>
-                      <input type="email" class="dialogue-input" id="email" required>
+                      <label for="user_email" class="dialogue-label">Email address</label>
+                      <input type="email" class="dialogue-input" id="user_email" name="user_email" value="vinay.khindri@abnamro.com" required>
                   </div>
                   <div class="mb-4">
                     <label for="role" class="dialogue-label">Role</label>
-                    <input type="role" class="dialogue-input" id="role" required>
-                </div>
+                    <select
+                      class="dialogue-input"
+                      id="user_role"
+                      name="user_role">
+                      <option value="Administrator" selected>Administrator</option>
+                      <option value="User manager">User manager</option>
+                      <option value="License manager">License manager</option>
+                    </select>
+                  </div>
               </form>
           </div>
           <div class="border-t px-4 py-2 flex justify-end">
-              <button class="dialogue-button">Save</button>
-              <button class="dialogue-button dialogue-close" onclick="document.getElementById('addUserModal').close();">Close</button>
+              <button 
+                class="dialogue-button dynamic-request" 
+                hx-post="/user-management/create-user" 
+                hx-headers='{"Content-Type": "application/json"}'
+                hx-method="POST"
+                hx-include=".dialogue-input"
+                hx-trigger="click">
+                  Save
+                </button>
+              <button class="dialogue-button dialogue-close" 
+              onclick="document.getElementById('addUserModal').close();">Close</button>
           </div>
       </div>
   </dialog>
@@ -75,7 +91,7 @@
     <!-- Table head -->
     <thead class="tracking-wider sticky top-0">
       <tr>
-        <th scope="col" class="px-6 py-4" style="width: 35%">
+        <th scope="col" class="px-6 py-4" style="width: 25%">
           <span class="flex justify-between">
             User
             <svg
@@ -89,7 +105,21 @@
             </svg> 
           </span>
         </th>
-        <th scope="col" class="px-6 py-4" style="width: 60%">
+        <th scope="col" class="px-6 py-4" style="width: 25%">
+          <span class="flex justify-between">
+            Contact
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              class="sorting-icon"
+              stroke-width="1.5" 
+              fill="currentColor"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
+            </svg> 
+          </span>
+        </th>
+        <th scope="col" class="px-6 py-4" style="width: 45%">
           <span class="flex justify-between">
             Role
             <svg
@@ -111,8 +141,10 @@
 
     <!-- Table body -->
     <tbody>
+      {% for user in users %}
       <tr class="hover:bg-neutral-100 dark:hover:bg-neutral-600">
-        <td class="px-6 py-4">Shawn van den Berg</td>
+        <td class="px-6 py-4">{{ user.first_name }} {{ user.last_name }}</td>
+        <td class="px-6 py-4">{{ user.email }}</td>
         <td class="px-6 py-4">Administrator</td>
         <td class="action">
           <svg 
@@ -122,6 +154,7 @@
             strokewidth="{1.5}" 
             stroke="#005E5D" 
             class="h-4 w-4"
+            onclick="document.getElementById('editUserModal').showModal();"
             >
             <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
           </svg>
@@ -136,126 +169,54 @@
         </td>
       </tr>
 
-      <tr class="hover:bg-neutral-100 dark:hover:bg-neutral-600 bg-neutral-50 dark:bg-neutral-800">
-        <td class="px-6 py-4">Avinash Haldkar</td>
-        <td class="px-6 py-4">Administrator</td>
-        <td class="action">
-          <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            strokewidth="{1.5}" 
-            stroke="#005E5D" 
-            class="h-4 w-4">
-            <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-          </svg>
-          <svg  xmlns="http://www.w3.org/2000/svg" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            strokewidth="{1.5}" 
-            stroke="#005E5D" 
-            class="h-4 w-4">
-            <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-          </svg>
-        </td>
-      </tr>
-
-      <tr class="hover:bg-neutral-100 dark:hover:bg-neutral-600">
-        <td class="px-6 py-4">Kalyani Kalyani</td>
-        <td class="px-6 py-4">Administrator</td>
-        <td class="action">
-          <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            strokewidth="{1.5}" 
-            stroke="#005E5D" 
-            class="h-4 w-4">
-            <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-          </svg>
-          <svg  xmlns="http://www.w3.org/2000/svg" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            strokewidth="{1.5}" 
-            stroke="#005E5D" 
-            class="h-4 w-4">
-            <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-          </svg>
-        </td>
-      </tr>
-
-      <tr class="hover:bg-neutral-100 dark:hover:bg-neutral-600 bg-neutral-50 dark:bg-neutral-800">
-        <td class="px-6 py-4">Rakesh Agrahari</td>
-        <td class="px-6 py-4">Administrator</td>
-        <td class="action">
-          <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            strokewidth="{1.5}" 
-            stroke="#005E5D" 
-            class="h-4 w-4">
-            <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-          </svg>
-          <svg  xmlns="http://www.w3.org/2000/svg" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            strokewidth="{1.5}" 
-            stroke="#005E5D" 
-            class="h-4 w-4">
-            <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-          </svg>
-        </td>
-      </tr>
-
-      <tr class="hover:bg-neutral-100 dark:hover:bg-neutral-600">
-        <td class="px-6 py-4">Hans Otto</td>
-        <td class="px-6 py-4">License Manager</td>
-        <td class="action">
-          <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            strokewidth="{1.5}" 
-            stroke="#005E5D" 
-            class="h-4 w-4">
-            <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-          </svg>
-          <svg  xmlns="http://www.w3.org/2000/svg" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            strokewidth="{1.5}" 
-            stroke="#005E5D" 
-            class="h-4 w-4">
-            <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-          </svg>
-        </td>
-      </tr>
-
-      <tr class="hover:bg-neutral-100 dark:hover:bg-neutral-600 bg-neutral-50 dark:bg-neutral-800">
-        <td class="px-6 py-4">Vinay Khindri </td>
-        <td class="px-6 py-4">User Manager</td>
-        <td class="action">
-          <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            strokewidth="{1.5}" 
-            stroke="#005E5D" 
-            class="h-4 w-4">
-            <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-          </svg>
-          <svg  xmlns="http://www.w3.org/2000/svg" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            strokewidth="{1.5}" 
-            stroke="#005E5D" 
-            class="h-4 w-4">
-            <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-          </svg>
-        </td>
-      </tr>
-
+      <dialog id="editUserModal" class="modal p-0 w-1/2">
+        <div class="bg-white rounded-lg shadow-lg">
+            <div class="dialogue-header">
+                <h5 class="text-lg">Edit user</h5>
+            </div>
+            <div class="p-4">
+                <form>
+                    <div class="mb-4">
+                        <label for="first_name" class="dialogue-label">First name</label>
+                        <input type="text" class="dialogue-input" id="first_name" name="first_name" value="{{ user.first_name }}" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="last_name" class="dialogue-label">Last name</label>
+                        <input type="text" class="dialogue-input" id="last_name" name="last_name" value="{{ user.last_name }}" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="user_email" class="dialogue-label">Email address</label>
+                        <input type="email" class="dialogue-input" id="user_email" name="user_email" value="{{ user.email }}" required>
+                    </div>
+                    <div class="mb-4">
+                      <label for="role" class="dialogue-label">Role</label>
+                      <select
+                        class="dialogue-input"
+                        id="user_role"
+                        name="user_role">
+                        <option value="Administrator" selected>Administrator</option>
+                        <option value="User manager">User manager</option>
+                        <option value="License manager">License manager</option>
+                      </select>
+                    </div>
+                </form>
+            </div>
+            <div class="border-t px-4 py-2 flex justify-end">
+                <button 
+                  class="dialogue-button dynamic-request" 
+                  hx-post="/user-management/edit-user/{{ user.user_id }}" 
+                  hx-headers='{"Content-Type": "application/json"}'
+                  hx-method="PATCH"
+                  hx-include=".dialogue-input"
+                  hx-trigger="click">
+                    Save
+                  </button>
+                <button class="dialogue-button dialogue-close" 
+                onclick="document.getElementById('editUserModal').close();">Close</button>
+            </div>
+        </div>
+      </dialog>
+      {% endfor %}
     </tbody>
 
   </table>
